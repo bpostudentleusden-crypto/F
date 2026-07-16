@@ -4,15 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Politieacademie - Opleidingszoeker</title>
-    <!-- Importmap voor Firebase SDK's -->
-    <script type="importmap">
-        {
-            "imports": {
-                "firebase/app": "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js",
-                "firebase/database": "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js"
-            }
-        }
-    </script>
     <style>
         * {
             box-sizing: border-box;
@@ -32,6 +23,7 @@
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             padding: 2rem;
+            text-align: center;
         }
         h1 {
             font-size: 2rem;
@@ -44,54 +36,19 @@
             color: #4a5b6e;
             margin-bottom: 1.5rem;
         }
-        .filter-section {
-            background: #eef2f7;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
-        }
-        .filter-section h2 {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: #0b2b4a;
-        }
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem 1.5rem;
-            margin-bottom: 1.2rem;
-        }
-        .checkbox-group label {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 1rem;
-            cursor: pointer;
-            background: white;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            border: 1px solid #ccd7e4;
-            transition: 0.2s;
-        }
-        .checkbox-group label:hover {
-            background: #d9e3ef;
-            border-color: #1e6f9f;
-        }
-        .checkbox-group input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #1e6f9f;
-        }
         .btn {
+            display: inline-block;
             background: #1e6f9f;
             color: white;
             border: none;
-            padding: 0.7rem 2rem;
+            padding: 0.9rem 3rem;
             border-radius: 30px;
-            font-size: 1rem;
+            font-size: 1.2rem;
             font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
+            text-decoration: none;
+            margin: 1rem 0;
         }
         .btn:hover {
             background: #145a82;
@@ -100,84 +57,38 @@
         .btn:active {
             transform: scale(0.98);
         }
-        .results-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 1rem;
-        }
-        .results-header h2 {
-            font-size: 1.3rem;
-        }
-        .results-header span {
-            color: #4a5b6e;
-            font-size: 0.95rem;
-        }
-        .opleiding-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-        .opleiding-card {
-            background: #f9fbfd;
+        .info-box {
+            background: #eef2f7;
+            padding: 1.5rem;
             border-radius: 12px;
-            padding: 1.2rem 1.5rem;
-            border-left: 5px solid #1e6f9f;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-            transition: 0.2s;
+            margin: 1.5rem 0;
+            text-align: left;
         }
-        .opleiding-card:hover {
-            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
-            transform: translateY(-2px);
-        }
-        .opleiding-card h3 {
-            font-size: 1.1rem;
+        .info-box h2 {
+            font-size: 1.2rem;
             color: #0b2b4a;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
         }
-        .opleiding-card .categorie-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.4rem;
-            margin: 0.6rem 0;
-        }
-        .opleiding-card .badge {
-            background: #d9e3ef;
-            color: #0b2b4a;
-            font-size: 0.75rem;
-            padding: 0.2rem 0.7rem;
-            border-radius: 12px;
-            font-weight: 500;
-        }
-        .opleiding-card .beschrijving {
-            font-size: 0.95rem;
+        .info-box p {
             color: #2c3e50;
-            margin-top: 0.4rem;
+            line-height: 1.6;
         }
-        .empty-message {
-            text-align: center;
+        .info-box ul {
+            padding-left: 1.5rem;
+            color: #2c3e50;
+        }
+        .info-box ul li {
+            margin: 0.4rem 0;
+        }
+        .footer-note {
+            margin-top: 2rem;
+            font-size: 0.85rem;
             color: #6a7b8c;
-            padding: 3rem 0;
-            font-style: italic;
-        }
-        .loading {
-            text-align: center;
-            color: #1e6f9f;
-            padding: 2rem 0;
-            font-weight: 500;
-        }
-        .error {
-            background: #fde8e8;
-            color: #b33c3c;
-            padding: 1rem;
-            border-radius: 8px;
-            margin: 1rem 0;
         }
         @media (max-width: 600px) {
             body { padding: 1rem; }
             .container { padding: 1rem; }
-            .checkbox-group label { padding: 0.3rem 0.6rem; font-size: 0.9rem; }
-            .opleiding-list { grid-template-columns: 1fr; }
+            .btn { padding: 0.7rem 1.5rem; font-size: 1rem; }
         }
     </style>
 </head>
@@ -186,200 +97,27 @@
         <h1>🚔 Opleidingsaanbod Politieacademie</h1>
         <p class="subtitle">Vind opleidingen die aansluiten bij jouw interesses en kwaliteiten.</p>
 
-        <!-- Filter sectie -->
-        <div class="filter-section">
-            <h2>🔎 Selecteer je interessegebied(en)</h2>
-            <div id="categorieCheckboxes" class="checkbox-group">
-                <!-- Checkboxes worden dynamisch gegenereerd uit de vaste lijst -->
-            </div>
-            <button id="zoekBtn" class="btn">Toon opleidingen</button>
+        <!-- Knoppen naar het actuele aanbod -->
+        <a href="https://www.politieacademie.nl/opleidingen/overzicht-opleidingen" target="_blank" class="btn">
+            📚 Bekijk het actuele opleidingsaanbod
+        </a>
+
+        <div class="info-box">
+            <h2>🔎 Zo werkt het</h2>
+            <p>Klik op de knop hierboven om direct naar het <strong>actuele opleidingsoverzicht</strong> van de Politieacademie te gaan. Daar vind je:</p>
+            <ul>
+                <li><strong>Zo'n 400 opleidingen</strong> – van basisopleidingen tot specialistische trainingen[reference:0]</li>
+                <li><strong>Basisopleidingen</strong> op niveau 4 en hbo-bachelor[reference:1]</li>
+                <li><strong>Vakspecialistische opleidingen</strong> voor recherche, verkeer, leidinggeven en meer[reference:2]</li>
+                <li><strong>Actuele startdata en locaties</strong> – de informatie wordt continu bijgewerkt door de Politieacademie</li>
+            </ul>
+            <p style="margin-top: 0.8rem;">Je kunt in het overzicht filteren op doelgroep, discipline en studierichting om de opleiding te vinden die bij jou past.</p>
         </div>
 
-        <!-- Resultaten -->
-        <div class="results-header">
-            <h2>📚 Opleidingen</h2>
-            <span id="aantalResultaten">0 gevonden</span>
-        </div>
-        <div id="opleidingContainer">
-            <div class="loading">📡 Opleidingen laden...</div>
+        <div class="footer-note">
+            ⚡ Deze pagina verwijst door naar de officiële website van de Politieacademie. 
+            Zo zie je altijd het meest actuele aanbod.
         </div>
     </div>
-
-    <script type="module">
-        // ---------- Firebase config (uit jouw gegevens) ----------
-        const firebaseConfig = {
-            apiKey: "AIzaSyAlyeBP6qcGADaEYGRLdEaKkYnnnnHDi70",
-            authDomain: "a2a2-5e47c.firebaseapp.com",
-            databaseURL: "https://a2a2-5e47c-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "a2a2-5e47c",
-            storageBucket: "a2a2-5e47c.firebasestorage.app",
-            messagingSenderId: "299649973332",
-            appId: "1:299649973332:web:c2fddb5a2e1ec5fa7f01c1"
-        };
-
-        // ---------- Imports ----------
-        import { initializeApp } from "firebase/app";
-        import { getDatabase, ref, onValue } from "firebase/database";
-
-        // ---------- Initialiseer Firebase ----------
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const opleidingenRef = ref(db, 'opleidingen');
-
-        // ---------- Vaste categorieën (uitbreidbaar) ----------
-        const CATEGORIEEN = [
-            'Handhaven',
-            'Opsporen',
-            'Ondermijning',
-            'Verkeer',
-            'Crisisbeheersing',
-            'Cybercrime',
-            'Leidinggeven',
-            'Onderzoek',
-            'Burgerlijke stand',
-            'Jeugd & gezin'
-        ];
-
-        // ---------- DOM referenties ----------
-        const checkboxesContainer = document.getElementById('categorieCheckboxes');
-        const zoekBtn = document.getElementById('zoekBtn');
-        const opleidingContainer = document.getElementById('opleidingContainer');
-        const aantalSpan = document.getElementById('aantalResultaten');
-
-        // ---------- Genereer checkboxes ----------
-        CATEGORIEEN.forEach(cat => {
-            const label = document.createElement('label');
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.value = cat;
-            label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(cat));
-            checkboxesContainer.appendChild(label);
-        });
-
-        // ---------- Globale variabele voor alle opleidingen ----------
-        let alleOpleidingen = [];
-
-        // ---------- Functie: opleidingen renderen op basis van geselecteerde categorieën ----------
-        function renderOpleidingen() {
-            // Geselecteerde categorieën ophalen
-            const checkboxes = checkboxesContainer.querySelectorAll('input[type="checkbox"]:checked');
-            const geselecteerd = Array.from(checkboxes).map(cb => cb.value);
-
-            // Filteren
-            let gefilterd = alleOpleidingen;
-            if (geselecteerd.length > 0) {
-                gefilterd = alleOpleidingen.filter(opleiding => {
-                    // Opleiding heeft een array 'categorieën' (of een string, we behandelen beide)
-                    const catArray = Array.isArray(opleiding.categorieën) 
-                        ? opleiding.categorieën 
-                        : (opleiding.categorieën ? [opleiding.categorieën] : []);
-                    // Controleer of minstens één geselecteerde categorie in de opleiding voorkomt
-                    return geselecteerd.some(sel => catArray.includes(sel));
-                });
-            }
-
-            // Aantal bijwerken
-            aantalSpan.textContent = `${gefilterd.length} gevonden`;
-
-            // Container leegmaken
-            opleidingContainer.innerHTML = '';
-
-            if (gefilterd.length === 0) {
-                opleidingContainer.innerHTML = `<div class="empty-message">Geen opleidingen gevonden voor de geselecteerde categorieën.</div>`;
-                return;
-            }
-
-            // Kaarten genereren
-            const list = document.createElement('div');
-            list.className = 'opleiding-list';
-
-            gefilterd.forEach(opleiding => {
-                const card = document.createElement('div');
-                card.className = 'opleiding-card';
-
-                const titel = document.createElement('h3');
-                titel.textContent = opleiding.titel || 'Onbekende titel';
-                card.appendChild(titel);
-
-                // Categorie badges
-                const catBadges = document.createElement('div');
-                catBadges.className = 'categorie-badges';
-                const catArray = Array.isArray(opleiding.categorieën) 
-                    ? opleiding.categorieën 
-                    : (opleiding.categorieën ? [opleiding.categorieën] : []);
-                catArray.forEach(cat => {
-                    const badge = document.createElement('span');
-                    badge.className = 'badge';
-                    badge.textContent = cat;
-                    catBadges.appendChild(badge);
-                });
-                card.appendChild(catBadges);
-
-                const beschrijving = document.createElement('div');
-                beschrijving.className = 'beschrijving';
-                beschrijving.textContent = opleiding.beschrijving || 'Geen beschrijving beschikbaar.';
-                card.appendChild(beschrijving);
-
-                list.appendChild(card);
-            });
-
-            opleidingContainer.appendChild(list);
-        }
-
-        // ---------- Data ophalen uit Firebase ----------
-        function laadOpleidingen() {
-            opleidingContainer.innerHTML = `<div class="loading">📡 Opleidingen laden...</div>`;
-
-            onValue(opleidingenRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data === null) {
-                    opleidingContainer.innerHTML = `<div class="empty-message">Er zijn nog geen opleidingen toegevoegd in de database.</div>`;
-                    aantalSpan.textContent = '0 gevonden';
-                    alleOpleidingen = [];
-                    return;
-                }
-
-                // Data omzetten naar array (als object met keys)
-                const keys = Object.keys(data);
-                alleOpleidingen = keys.map(key => {
-                    const item = data[key];
-                    // Zorg dat we een ID hebben voor eventueel later gebruik
-                    return { id: key, ...item };
-                });
-
-                // Standaard alle opleidingen tonen (of filter toepassen als er al wat geselecteerd is)
-                renderOpleidingen();
-            }, (error) => {
-                console.error('Fout bij laden data:', error);
-                opleidingContainer.innerHTML = `<div class="error">❌ Fout bij het laden van opleidingen: ${error.message}</div>`;
-            });
-        }
-
-        // ---------- Event listener voor zoekknop ----------
-        zoekBtn.addEventListener('click', renderOpleidingen);
-
-        // ---------- Start: laad opleidingen ----------
-        laadOpleidingen();
-
-        // ---------- (Optioneel) Voorbeeld van de verwachte datastructuur in Firebase ----------
-        /*
-        In je Firebase Realtime Database onder de node "opleidingen" verwachten we objecten met deze velden:
-        {
-            "opleiding1": {
-                "titel": "Basistraining Handhaven",
-                "categorieën": ["Handhaven", "Verkeer"],
-                "beschrijving": "Leer de basis van handhavend optreden in het verkeer."
-            },
-            "opleiding2": {
-                "titel": "Opsporing van Ondermijning",
-                "categorieën": ["Opsporen", "Ondermijning"],
-                "beschrijving": "Verdiep je in de aanpak van ondermijnende criminaliteit."
-            },
-            ...
-        }
-        Je kunt deze data handmatig toevoegen via de Firebase Console of via een import.
-        */
-    </script>
 </body>
 </html>
